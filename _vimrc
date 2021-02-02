@@ -1,10 +1,13 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Global settings
-" Use Vim settings, rather than Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
+"" Global settings
+"" Use Vim settings, rather than Vi settings (much better!).
+"" This must be first, because it changes other options as a side effect.
+"" set compatible 就是让 vim 关闭所有扩bai展的功能，尽du量模拟 vi 的行为。
+"" set nocompatible，关闭兼容模式。由于这个选项是最最基础的选项，会连带很多其它选项发生变动（称作副作用），所以它必需是第一个设定的选项。
 set nocompatible
 
 " Always show the statusline
+" 默认值为 1, 无法显示状态栏
 set laststatus=2
 
 " allow backspacing over everything in insert mode
@@ -13,13 +16,13 @@ set backspace=indent,eol,start
 if has("vms")
     set nobackup		" do not keep a backup file, use versions instead
 else
-    set backup		" keep a backup file
+    set backup		    " keep a backup file
 endif
 
-set history=50		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
-set showcmd		" display incomplete commands
-set incsearch		" do incremental searching
+set history=50		    " keep 50 lines of command line history
+set ruler		        " show the cursor position all the time
+set showcmd		        " display incomplete commands
+set incsearch		    " do incremental searching
 
 " line number
 set nu
@@ -55,6 +58,11 @@ let mapleader = ","
 
 " Don't use Ex mode, use Q for formatting
 map Q gq
+
+" inoremap
+" i代表是在插入模式（insert）下有效
+" nore表示不递归no recursion
+" map映射
 
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
@@ -142,7 +150,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'vim-scripts/visSum.vim'
-"Plug 'vim-scripts/Tabular'
 Plug 'junegunn/vim-easy-align'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'kshenoy/vim-signature'
@@ -153,10 +160,14 @@ Plug 'mattn/webapi-vim' | Plug 'mattn/gist-vim'
 Plug 'benmills/vimux'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'edkolev/promptline.vim'
+Plug 'edkolev/tmuxline.vim'
+Plug 'dkprice/vim-easygrep'
+Plug 'lfv89/vim-interestingwords'
+Plug 'itchyny/vim-cursorword'
 
 " programming
 Plug 'vim-scripts/TaskList.vim'
-Plug 'vim-scripts/a.vim'
+Plug 'vim-scripts/a.vim', { 'for': ['c', 'cpp'] }
 "Plug 'pright/c.vim'
 Plug 'mbbill/echofunc'
 Plug 'vim-scripts/DoxygenToolkit.vim'
@@ -165,27 +176,36 @@ Plug 'pright/CCTree'
 Plug 'pright/stl-tags'
 Plug 'pright/glibc-tags'
 Plug 'pright/mytags'
-Plug 'vim-scripts/OmniCppComplete'
-Plug 'davidhalter/jedi-vim', { 'do': 'git submodule update --init' }
+Plug 'vim-scripts/OmniCppComplete', { 'for': ['c', 'cpp'] }
+Plug 'davidhalter/jedi-vim', { 'do': 'git submodule update --init', 'for': 'python' }
 "Plug 'vim-scripts/clang-complete'
-"Plug 'Valloric/YouCompleteMe'
-"Plug 'vim-scripts/code_complete'
+" Plug 'Valloric/YouCompleteMe'
+Plug 'vim-scripts/code_complete'
 Plug 'vim-scripts/pep8'
 Plug 'MarcWeber/vim-addon-mw-utils' | Plug 'tomtom/tlib_vim' | Plug 'garbas/vim-snipmate'
 Plug 'pright/vim-snippets'
 "Plug 'drmingdrmer/xptemplate'
 "Plug 'vim-scripts/UltiSnips'
 Plug 'tpope/vim-fugitive'
-"Plug 'vim-scripts/minibufexpl.vim'
+Plug 'mhinz/vim-signify'
+Plug 'vim-scripts/minibufexpl.vim'
 "Plug 'vim-scripts/bufexplorer.zip'
-Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 "Plug 'vim-scripts/taglist.vim'
-Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 "Plug 'pright/winmanager--Fox'
-Plug 'elzr/vim-json'
-Plug 'plasticboy/vim-markdown'
+Plug 'elzr/vim-json', { 'for': 'json' }
+Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'mattn/emmet-vim'
 "Plug 'scrooloose/syntastic'
+"Plug 'ludovicchabant/vim-gutentags'
+"Plug 'w0rp/ale'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'Yggdroot/indentLine'
+Plug 'nathanaelkane/vim-indent-guides'    "缩进显示"
+
+" coc.nvim
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
@@ -207,6 +227,7 @@ else
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" quickfix是vim内置插件，用于浏览命令执行结果信息。命令需要进行设定，才能把执行结果显示到quickfix中。
 " QuickFix
 nnoremap <silent> <leader>n :cn<CR>
 nnoremap <silent> <leader>p :cp<CR>
@@ -251,7 +272,7 @@ if has("cscope")
     endif
     set csverb
 endif
-:set cscopequickfix=s-,c-,d-,i-,t-,e-
+""" :set cscopequickfix=s-,c-,d-,i-,t-,e-
 nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
 nmap <C-_>g :cs find g <C-R>=expand("<cword>")<CR><CR>
 nmap <C-_>c :cs find c <C-R>=expand("<cword>")<CR><CR>
@@ -263,8 +284,8 @@ nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ctags
-set tags+=~/.vim/bundle/stl-tags/tags
-set tags+=~/.vim/bundle/glibc-tags/tags
+"set tags+=~/.vim/bundle/stl-tags/tags
+"set tags+=~/.vim/bundle/glibc-tags/tags
 "set tags+=~/.vim/bundle/mytags/hi3716c_sdk50_framework_base.tags
 if filereadable("tags")
     set tags+=tags
@@ -274,13 +295,14 @@ nnoremap <silent> <leader>u :!update_tags<CR>:cs reset<CR><CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " minibufexpl
-"let g:miniBufExplMapCTabSwitchBufs=1
-"let g:miniBufExplMapWindowNavVim=1
-"let g:miniBufExplMapWindowNavArrows=1
-"let g:miniBufExplModSelTarget=1
-"let g:miniBufExplForceSyntaxEnable = 1
+let g:miniBufExplMapCTabSwitchBufs=1
+let g:miniBufExplMapWindowNavVim=1
+let g:miniBufExplMapWindowNavArrows=1
+let g:miniBufExplModSelTarget=1
+" let g:miniBufExplForceSyntaxEnable = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 头文件(.h)和源文件(.c,.cpp,.cc...)之间切换
 " a.vim
 nnoremap <silent> <leader>a :A<CR>
 
@@ -303,6 +325,7 @@ if executable('ag')
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 自动补全 
 " OmniCppComplete
 let OmniCpp_GlobalScopeSearch = 1
 let OmniCpp_NamespaceSearch = 1
@@ -339,7 +362,7 @@ let g:EchoFuncKeyNext="<C-n>"
 "let g:DoxygenToolkit_returnTag="@Returns "
 "let g:DoxygenToolkit_blockHeader="--------------------------------------------------------------------------"
 "let g:DoxygenToolkit_blockFooter="----------------------------------------------------------------------------"
-let g:DoxygenToolkit_authorName="Jun Xie"
+let g:DoxygenToolkit_authorName="MagicYang"
 "let g:DoxygenToolkit_licenseTag="My own license"   <-- !!! Does not end with "\<enter>"
 let g:doxygenToolkit_briefTag_funcName="yes"
 nnoremap <F2>a :DoxAuthor
@@ -528,7 +551,7 @@ nnoremap <silent> <leader>G :Ag!<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vimux
-let g:VimuxHeight = "40"
+let g:VimuxHeight = "30"
 let g:VimuxOrientation = "h"
 
 function! VimuxSlime()
@@ -544,6 +567,7 @@ nmap <Leader>vs vip<Leader>vs<CR>
 
 " Prompt for a command to run
 map <Leader>vp :VimuxPromptCommand<CR>
+map <Leader>vm :VimuxPromptCommand("make ")<CR>
 
 " Run last command executed by VimuxRunCommand
 map <Leader>vl :VimuxRunLastCommand<CR>
@@ -573,5 +597,238 @@ let g:NERDCustomDelimiters = {
             \ }
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" promptline
-let g:promptline_preset = 'clear'
+" promptline.vim
+"let g:promptline_preset = 'clear'
+let g:promptline_preset = {
+        \'b' : [ promptline#slices#python_virtualenv(), '$USER' ],
+        \'a' : [ promptline#slices#vcs_branch() ],
+        \'c' : [ promptline#slices#cwd() ],
+        \'options': {
+          \'left_sections' : [ 'b', 'a', 'c' ],
+          \'left_only_sections' : [ 'b', 'a', 'c' ]}}
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" tmuxline.vim
+let g:tmuxline_preset = 'tmux'
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-gutentags
+let g:gutentags_modules = []
+if executable('ctags')
+    let g:gutentags_modules += ['ctags']
+endif
+if executable('cscope')
+    let g:gutentags_modules += ['cscope']
+endif
+if executable('gtags-cscope') && executable('gtags')
+    let g:gutentags_modules += ['gtags_cscope']
+endif
+
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""新文件标题
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"新建.c,.h,.sh,.java文件，自动插入文件头
+autocmd BufNewFile *.cpp,*.[ch],*.sh,*.rb,*.java,*.py exec ":call SetTitle()"
+""定义函数SetTitle，自动插入文件头
+func SetTitle()
+	"如果文件类型为.sh文件
+	if &filetype == 'sh'
+		call setline(1,"\#!/bin/bash")
+		call append(line("."), "")
+    elseif &filetype == 'python'
+        call setline(1,"#!/usr/bin/env python")
+        call append(line("."),"# coding=utf-8")
+	    call append(line(".")+1, "")
+
+    elseif &filetype == 'ruby'
+        call setline(1,"#!/usr/bin/env ruby")
+        call append(line("."),"# encoding: utf-8")
+	    call append(line(".")+1, "")
+
+"    elseif &filetype == 'mkd'
+"        call setline(1,"<head><meta charset=\"UTF-8\"></head>")
+	else
+		call setline(1, "/*************************************************************************")
+		call append(line("."), "	> File Name: ".expand("%"))
+		call append(line(".")+1, "	> Author: MagicYang")
+		call append(line(".")+2, "	> Mail: ")
+		call append(line(".")+3, "	> Created Time: ".strftime("%c"))
+		call append(line(".")+4, " ************************************************************************/")
+		call append(line(".")+5, "")
+	endif
+	if expand("%:e") == 'cpp'
+		call append(line(".")+6, "#include<iostream>")
+		call append(line(".")+7, "using namespace std;")
+		call append(line(".")+8, "")
+	endif
+	if &filetype == 'c'
+		call append(line(".")+6, "#include<stdio.h>")
+		call append(line(".")+7, "")
+	endif
+	if expand("%:e") == 'h'
+		call append(line(".")+6, "#ifndef _".toupper(expand("%:r"))."_H")
+		call append(line(".")+7, "#define _".toupper(expand("%:r"))."_H")
+		call append(line(".")+8, "#endif")
+	endif
+	if &filetype == 'java'
+		call append(line(".")+6,"public class ".expand("%:r"))
+		call append(line(".")+7,"")
+	endif
+	"新建文件后，自动定位到文件末尾
+endfunc
+autocmd BufNewFile * normal G
+
+
+" eggcache vim
+"nnoremap ; :
+:command W w
+:command WQ wq
+:command Wq wq
+:command Q q
+:command Qa qa
+:command QA qa
+:command QW qa
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""实用设置
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""" 设置当文件被改动时自动载入
+""set autoread
+""" quickfix模式
+""autocmd FileType c,cpp map <buffer> <leader><space> :w<cr>:make<cr>
+"""代码补全
+""set completeopt=preview,menu
+"""允许插件
+""filetype plugin on
+"""共享剪贴板
+""set clipboard+=unnamed
+"""从不备份
+""set nobackup
+"""make 运行
+"":set makeprg=g++\ -Wall\ \ %
+"""自动保存
+""set autowrite
+""set ruler                   " 打开状态栏标尺
+""set cursorline              " 突出显示当前行
+""set magic                   " 设置魔术
+""set guioptions-=T           " 隐藏工具栏
+""set guioptions-=m           " 隐藏菜单栏
+"""set statusline=\ %<%F[%1*%M%*%n%R%H]%=\ %y\ %0(%{&fileformat}\ %{&encoding}\ %c:%l/%L%)\
+""" 设置在状态行显示的信息
+""set foldcolumn=0
+""set foldmethod=indent
+""set foldlevel=3
+""set foldenable              " 开始折叠
+""" 不要使用vi的键盘模式，而是vim自己的
+""set nocompatible
+""" 语法高亮
+""set syntax=on
+""" 去掉输入错误的提示声音
+""set noeb
+""" 在处理未保存或只读文件的时候，弹出确认
+""set confirm
+""" 自动缩进
+""set autoindent
+""set cindent
+""" Tab键的宽度
+""set tabstop=4
+""" 统一缩进为4
+""set softtabstop=4
+""set shiftwidth=4
+""" 不要用空格代替制表符
+""set noexpandtab
+""" 在行和段开始处使用制表符
+""set smarttab
+""" 显示行号
+""set number
+""" 历史记录数
+""set history=1000
+"""禁止生成临时文件
+""set nobackup
+""set noswapfile
+"""搜索忽略大小写
+""set ignorecase
+"""搜索逐字符高亮
+""set hlsearch
+""set incsearch
+"""行内替换
+""set gdefault
+"""编码设置
+""set enc=utf-8
+""set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
+"""语言设置
+""set langmenu=zh_CN.UTF-8
+""set helplang=cn
+""" 我的状态行显示的内容（包括文件类型和解码）
+"""set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}
+"""set statusline=[%F]%y%r%m%*%=[Line:%l/%L,Column:%c][%p%%]
+""" 总是显示状态行
+""set laststatus=2
+""" 命令行（在状态行下）的高度，默认为1，这里是2
+""set cmdheight=2
+""" 侦测文件类型
+""filetype on
+""" 载入文件类型插件
+""filetype plugin on
+""" 为特定文件类型载入相关缩进文件
+""filetype indent on
+""" 保存全局变量
+""set viminfo+=!
+""" 带有如下符号的单词不要被换行分割
+""set iskeyword+=_,$,@,%,#,-
+""" 字符间插入的像素行数目
+""set linespace=0
+""" 增强模式中的命令行自动完成操作
+""set wildmenu
+""" 使回格键（backspace）正常处理indent, eol, start等
+""set backspace=2
+""" 允许backspace和光标键跨越行边界
+""set whichwrap+=<,>,h,l
+""" 可以在buffer的任何地方使用鼠标（类似office中在工作区双击鼠标定位）
+""set mouse=a
+""set selection=exclusive
+""set selectmode=mouse,key
+""" 通过使用: commands命令，告诉我们文件的哪一行被改变过
+""set report=0
+""" 在被分割的窗口间显示空白，便于阅读
+""set fillchars=vert:\ ,stl:\ ,stlnc:\
+""" 高亮显示匹配的括号
+""set showmatch
+""" 匹配括号高亮的时间（单位是十分之一秒）
+""set matchtime=1
+""" 光标移动到buffer的顶部和底部时保持3行距离
+""set scrolloff=3
+""" 为C程序提供自动缩进
+""set smartindent
+""" 高亮显示普通txt文件（需要txt.vim脚本）
+""au BufRead,BufNewFile *  setfiletype txt
+"""自动补全
+"":inoremap ( ()<ESC>i
+"":inoremap ) <c-r>=ClosePair(')')<CR>
+""":inoremap { {<CR>}<ESC>O
+""":inoremap } <c-r>=ClosePair('}')<CR>
+"":inoremap [ []<ESC>i
+"":inoremap ] <c-r>=ClosePair(']')<CR>
+"":inoremap " ""<ESC>i
+"":inoremap ' ''<ESC>i
+""function! ClosePair(char)
+""        if getline('.')[col('.') - 1] == a:char
+""                return "\<Right>"
+""        else
+""                return a:char
+""        endif
+""endfunction
+""filetype plugin indent on
+"""打开文件类型检测, 加了这句才可以用智能补全
+""set completeopt=longest,menu
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
